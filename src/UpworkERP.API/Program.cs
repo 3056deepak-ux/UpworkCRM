@@ -28,6 +28,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
 builder.Services.AddScoped<IAuditTrailService, AuditTrailService>();
+builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
 
 // Configure CORS
 var corsSettings = builder.Configuration.GetSection("CorsSettings");

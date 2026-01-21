@@ -5,6 +5,7 @@ using UpworkERP.Core.Entities.Finance;
 using UpworkERP.Core.Entities.CRM;
 using UpworkERP.Core.Entities.Projects;
 using UpworkERP.Core.Entities.Inventory;
+using UpworkERP.Core.Entities.Auth;
 
 namespace UpworkERP.Infrastructure.Data;
 
@@ -21,6 +22,12 @@ public class ERPDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<ActivityLog> ActivityLogs { get; set; }
     public DbSet<AuditTrail> AuditTrails { get; set; }
+
+    // Auth entities for RBAC
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<Permission> Permissions { get; set; }
+    public DbSet<UserRole> UserRoles { get; set; }
+    public DbSet<RolePermission> RolePermissions { get; set; }
 
     // HR entities
     public DbSet<Employee> Employees { get; set; }
@@ -52,6 +59,7 @@ public class ERPDbContext : DbContext
 
         // Configure entity relationships and constraints
         ConfigureCommonEntities(modelBuilder);
+        ConfigureAuthEntities(modelBuilder);
         ConfigureHREntities(modelBuilder);
         ConfigureFinanceEntities(modelBuilder);
         ConfigureCRMEntities(modelBuilder);
@@ -70,11 +78,50 @@ public class ERPDbContext : DbContext
             .IsUnique();
     }
 
+    private void ConfigureAuthEntities(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Role>()
+            .HasIndex(r => r.Name)
+            .IsUnique();
+
+        modelBuilder.Entity<Permission>()
+            .HasIndex(p => new { p.Module, p.Action })
+            .IsUnique();
+
+        modelBuilder.Entity<UserRole>()
+            .HasOne(ur => ur.User)
+            .WithMany(u => u.UserRoles)
+            .HasForeignKey(ur => ur.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<UserRole>()
+            .HasOne(ur => ur.Role)
+            .WithMany(r => r.UserRoles)
+            .HasForeignKey(ur => ur.RoleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RolePermission>()
+            .HasOne(rp => rp.Role)
+            .WithMany(r => r.RolePermissions)
+            .HasForeignKey(rp => rp.RoleId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RolePermission>()
+            .HasOne(rp => rp.Permission)
+            .WithMany(p => p.RolePermissions)
+            .HasForeignKey(rp => rp.PermissionId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+
     private void ConfigureHREntities(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Employee>()
             .HasIndex(e => e.Email)
             .IsUnique();
+
+        modelBuilder.Entity<Employee>()
+            .Property(e => e.Salary)
+            .HasPrecision(18, 2);
 
         modelBuilder.Entity<LeaveRequest>()
             .HasOne(lr => lr.Employee)
@@ -87,6 +134,18 @@ public class ERPDbContext : DbContext
             .WithMany(e => e.PayrollRecords)
             .HasForeignKey(pr => pr.EmployeeId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<PayrollRecord>()
+            .Property(pr => pr.GrossPay)
+            .HasPrecision(18, 2);
+
+        modelBuilder.Entity<PayrollRecord>()
+            .Property(pr => pr.Deductions)
+            .HasPrecision(18, 2);
+
+        modelBuilder.Entity<PayrollRecord>()
+            .Property(pr => pr.NetPay)
+            .HasPrecision(18, 2);
     }
 
     private void ConfigureFinanceEntities(ModelBuilder modelBuilder)
@@ -95,11 +154,27 @@ public class ERPDbContext : DbContext
             .HasIndex(a => a.AccountNumber)
             .IsUnique();
 
+        modelBuilder.Entity<Account>()
+            .Property(a => a.Balance)
+            .HasPrecision(18, 2);
+
         modelBuilder.Entity<Transaction>()
             .HasOne(t => t.Account)
             .WithMany(a => a.Transactions)
             .HasForeignKey(t => t.AccountId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Transaction>()
+            .Property(t => t.Amount)
+            .HasPrecision(18, 2);
+
+        modelBuilder.Entity<Budget>()
+            .Property(b => b.AllocatedAmount)
+            .HasPrecision(18, 2);
+
+        modelBuilder.Entity<Budget>()
+            .Property(b => b.SpentAmount)
+            .HasPrecision(18, 2);
     }
 
     private void ConfigureCRMEntities(ModelBuilder modelBuilder)
@@ -109,6 +184,10 @@ public class ERPDbContext : DbContext
             .WithMany(c => c.Leads)
             .HasForeignKey(l => l.CustomerId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Lead>()
+            .Property(l => l.EstimatedValue)
+            .HasPrecision(18, 2);
     }
 
     private void ConfigureProjectEntities(ModelBuilder modelBuilder)
@@ -130,6 +209,14 @@ public class ERPDbContext : DbContext
             .WithMany()
             .HasForeignKey(te => te.TaskId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Project>()
+            .Property(p => p.Budget)
+            .HasPrecision(18, 2);
+
+        modelBuilder.Entity<TimeEntry>()
+            .Property(te => te.Hours)
+            .HasPrecision(18, 2);
     }
 
     private void ConfigureInventoryEntities(ModelBuilder modelBuilder)
@@ -137,6 +224,10 @@ public class ERPDbContext : DbContext
         modelBuilder.Entity<Product>()
             .HasIndex(p => p.SKU)
             .IsUnique();
+
+        modelBuilder.Entity<Product>()
+            .Property(p => p.UnitPrice)
+            .HasPrecision(18, 2);
 
         modelBuilder.Entity<StockMovement>()
             .HasOne(sm => sm.Product)

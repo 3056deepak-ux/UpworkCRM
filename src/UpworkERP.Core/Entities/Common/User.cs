@@ -16,4 +16,7 @@ public class User : BaseEntity
     public UserRole Role { get; set; } = UserRole.Employee;
     public bool IsActive { get; set; } = true;
     public DateTime? LastLoginDate { get; set; }
+    
+    // Navigation properties for RBAC
+    public ICollection<Auth.UserRole> UserRoles { get; set; } = new List<Auth.UserRole>();
 }
