@@ -229,7 +229,7 @@ Implemented REST API controllers with Swagger documentation:
 ### 10. Technology Stack ✅
 
 - **.NET 10.0** - Latest framework
-- **Entity Framework Core** - ORM
+- **Entity Framework Core** - ORM with automatic migrations
 - **SQL Server** - Database
 - **ASP.NET Core Web API** - REST API
 - **ASP.NET Core MVC** - Web UI
@@ -238,6 +238,60 @@ Implemented REST API controllers with Swagger documentation:
 - **xUnit** - Testing framework
 - **Moq** - Mocking framework
 - **Bootstrap 5** - UI framework (configured)
+
+### 11. Automatic Database Initialization ✅
+
+#### Database Migration on Startup
+The API now automatically applies pending Entity Framework Core migrations when the application starts, ensuring the database schema is always up-to-date.
+
+**Implementation Details:**
+- Migrations are applied using `Database.Migrate()` during application startup
+- Executed within a scoped service to properly manage the DbContext lifecycle
+- **Location:** `src/UpworkERP.API/Program.cs` (lines 84-105)
+
+```csharp
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ERPDbContext>();
+    dbContext.Database.Migrate();
+}
+```
+
+#### Initial Data Seeding
+The application automatically seeds critical initial data when tables are empty:
+
+**Default Admin User:**
+- Username: `admin`
+- Email: `admin@upworkerp.com`
+- Role: `Admin`
+- Status: Active
+
+**Seeding Logic:**
+```csharp
+if (!dbContext.Users.Any())
+{
+    dbContext.Users.Add(new User 
+    { 
+        UserName = "admin", 
+        Email = "admin@upworkerp.com",
+        PasswordHash = "hashedpassword",
+        FirstName = "Admin",
+        LastName = "User",
+        Role = UserRole.Admin,
+        IsActive = true
+    });
+    dbContext.SaveChanges();
+}
+```
+
+**Benefits:**
+- ✅ No manual database setup required
+- ✅ Consistent database state across environments
+- ✅ Automatic table creation on first run
+- ✅ Critical data (admin user) available immediately
+- ✅ Prevents runtime errors due to missing tables
+
+⚠️ **Security Note:** The default admin password (`hashedpassword`) should be changed immediately after first login in production environments.
 
 ## Project Statistics
 
@@ -273,13 +327,15 @@ Implemented REST API controllers with Swagger documentation:
 9. ✅ Unit tests passing
 10. ✅ Comprehensive documentation
 11. ✅ Cloud deployment ready
+12. ✅ Automatic database migrations on startup
+13. ✅ Automatic initial data seeding
 
 ## Ready for Next Steps
 
 The framework is now ready for:
 
 ### Immediate Next Steps
-1. **Database Migrations** - Create EF Core migrations
+1. ~~**Database Migrations** - Create EF Core migrations~~ ✅ **Completed** - Automatic migration on startup
 2. **Frontend Development** - Bootstrap 5 UI implementation
 3. **Additional Controllers** - For Finance, Inventory modules
 4. **More Unit Tests** - Increase test coverage
