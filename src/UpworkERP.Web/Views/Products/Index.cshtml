@@ -77,17 +77,17 @@
                                             }
                                         </td>
                                         <td>
-                                            @if (item.Status == UpworkERP.Core.Enums.InventoryStatus.InStock)
+                                            @if (item.Status == UpworkERP.Core.Enums.ProductStatus.Active)
                                             {
-                                                <span class="badge bg-success">In Stock</span>
+                                                <span class="badge bg-success">Active</span>
                                             }
-                                            else if (item.Status == UpworkERP.Core.Enums.InventoryStatus.OutOfStock)
+                                            else if (item.Status == UpworkERP.Core.Enums.ProductStatus.OutOfStock)
                                             {
                                                 <span class="badge bg-danger">Out Of Stock</span>
                                             }
-                                            else if (item.Status == UpworkERP.Core.Enums.InventoryStatus.LowStock)
+                                            else if (item.Status == UpworkERP.Core.Enums.ProductStatus.Inactive)
                                             {
-                                                <span class="badge bg-warning">Low Stock</span>
+                                                <span class="badge bg-warning">Inactive</span>
                                             }
                                             else
                                             {

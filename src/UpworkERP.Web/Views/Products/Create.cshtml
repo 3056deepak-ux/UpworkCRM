@@ -69,7 +69,7 @@
 
                         <div class="col-md-6 mb-3">
                             <label asp-for="Status" class="form-label"></label>
-                            <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<UpworkERP.Core.Enums.InventoryStatus>()">
+                            <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<UpworkERP.Core.Enums.ProductStatus>()">
                                 <option value="">-- Select Status --</option>
                             </select>
                             <span asp-validation-for="Status" class="text-danger"></span>

@@ -66,15 +66,15 @@
                                         <td>@item.Department</td>
                                         <td>@item.Position</td>
                                         <td>
-                                            @if (item.Status == UpworkERP.Core.Enums.EmploymentStatus.Active)
+                                            @if (item.Status == UpworkERP.Core.Enums.EmployeeStatus.Active)
                                             {
                                                 <span class="badge bg-success">Active</span>
                                             }
-                                            else if (item.Status == UpworkERP.Core.Enums.EmploymentStatus.OnLeave)
+                                            else if (item.Status == UpworkERP.Core.Enums.EmployeeStatus.OnLeave)
                                             {
                                                 <span class="badge bg-warning">On Leave</span>
                                             }
-                                            else if (item.Status == UpworkERP.Core.Enums.EmploymentStatus.Terminated)
+                                            else if (item.Status == UpworkERP.Core.Enums.EmployeeStatus.Terminated)
                                             {
                                                 <span class="badge bg-danger">Terminated</span>
                                             }

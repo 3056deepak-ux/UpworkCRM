@@ -62,9 +62,9 @@
                                         <td>@item.StartDate.ToString("yyyy-MM-dd")</td>
                                         <td>@item.Budget.ToString("C")</td>
                                         <td>
-                                            @if (item.Status == UpworkERP.Core.Enums.ProjectStatus.Active)
+                                            @if (item.Status == UpworkERP.Core.Enums.ProjectStatus.InProgress)
                                             {
-                                                <span class="badge bg-success">Active</span>
+                                                <span class="badge bg-success">In Progress</span>
                                             }
                                             else if (item.Status == UpworkERP.Core.Enums.ProjectStatus.Completed)
                                             {
@@ -80,7 +80,7 @@
                                             }
                                             else
                                             {
-                                                <span class="badge bg-secondary">Pending</span>
+                                                <span class="badge bg-secondary">Planning</span>
                                             }
                                         </td>
                                         <td>
