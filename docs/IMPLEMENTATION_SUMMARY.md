@@ -229,7 +229,7 @@ Implemented REST API controllers with Swagger documentation:
 ### 10. Technology Stack ✅
 
 - **.NET 10.0** - Latest framework
-- **Entity Framework Core** - ORM
+- **Entity Framework Core** - ORM with automatic migrations
 - **SQL Server** - Database
 - **ASP.NET Core Web API** - REST API
 - **ASP.NET Core MVC** - Web UI
@@ -238,6 +238,81 @@ Implemented REST API controllers with Swagger documentation:
 - **xUnit** - Testing framework
 - **Moq** - Mocking framework
 - **Bootstrap 5** - UI framework (configured)
+
+### 11. Automatic Database Initialization ✅
+
+#### Database Migration on Startup
+The API now automatically applies pending Entity Framework Core migrations when the application starts, ensuring the database schema is always up-to-date.
+
+**Implementation Details:**
+- Migrations are applied using `Database.Migrate()` during application startup
+- Executed within a scoped service to properly manage the DbContext lifecycle
+- Comprehensive error handling and logging for migration failures
+- Application will fail to start if migrations cannot be applied
+- **Location:** `src/UpworkERP.API/Program.cs` (lines 84-120)
+
+```csharp
+try
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ERPDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    
+    logger.LogInformation("Applying database migrations...");
+    dbContext.Database.Migrate();
+    logger.LogInformation("Database migrations applied successfully.");
+}
+catch (Exception ex)
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "An error occurred while applying database migrations.");
+    throw;
+}
+```
+
+#### Initial Data Seeding
+The application automatically seeds critical initial data when tables are empty:
+
+**Default Admin User:**
+- Username: `admin`
+- Email: `admin@upworkerp.com`
+- Password: `Admin@123` (properly hashed using BCrypt)
+- Role: `Admin`
+- Status: Active
+
+**Seeding Logic:**
+```csharp
+if (!dbContext.Users.Any())
+{
+    var hashedPassword = BCrypt.Net.BCrypt.HashPassword("Admin@123");
+    dbContext.Users.Add(new User 
+    { 
+        UserName = "admin", 
+        Email = "admin@upworkerp.com",
+        PasswordHash = hashedPassword,
+        FirstName = "Admin",
+        LastName = "User",
+        Role = UserRole.Admin,
+        IsActive = true
+    });
+    dbContext.SaveChanges();
+}
+```
+
+**Security Features:**
+- Uses BCrypt.Net for secure password hashing
+- Error handling and logging for migration failures
+- Prevents application startup if migrations fail
+
+**Benefits:**
+- ✅ No manual database setup required
+- ✅ Consistent database state across environments
+- ✅ Automatic table creation on first run
+- ✅ Critical data (admin user) available immediately
+- ✅ Prevents runtime errors due to missing tables
+- ✅ Secure password storage using industry-standard hashing
+
+⚠️ **Security Note:** The default admin password (`Admin@123`) should be changed immediately after first login in all environments, especially production.
 
 ## Project Statistics
 
@@ -273,13 +348,15 @@ Implemented REST API controllers with Swagger documentation:
 9. ✅ Unit tests passing
 10. ✅ Comprehensive documentation
 11. ✅ Cloud deployment ready
+12. ✅ Automatic database migrations on startup
+13. ✅ Automatic initial data seeding
 
 ## Ready for Next Steps
 
 The framework is now ready for:
 
 ### Immediate Next Steps
-1. **Database Migrations** - Create EF Core migrations
+1. ~~**Database Migrations** - Create EF Core migrations~~ ✅ **Completed** - Automatic migration on startup
 2. **Frontend Development** - Bootstrap 5 UI implementation
 3. **Additional Controllers** - For Finance, Inventory modules
 4. **More Unit Tests** - Increase test coverage

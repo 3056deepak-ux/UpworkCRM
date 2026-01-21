@@ -7,6 +7,9 @@ using UpworkERP.Infrastructure.Repositories;
 using UpworkERP.Application.Services.Interfaces;
 using UpworkERP.Application.Services.Implementation;
 using UpworkERP.Core.Interfaces;
+using UpworkERP.Core.Entities.Common;
+using UpworkERP.Core.Enums;
+using BCrypt.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,6 +81,43 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// Apply database migrations automatically
+try
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ERPDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    
+    logger.LogInformation("Applying database migrations...");
+    dbContext.Database.Migrate();
+    logger.LogInformation("Database migrations applied successfully.");
+    
+    // Seed initial data if Users table is empty
+    if (!dbContext.Users.Any())
+    {
+        logger.LogInformation("Seeding initial admin user...");
+        var hashedPassword = BCrypt.Net.BCrypt.HashPassword("Admin@123");
+        dbContext.Users.Add(new User 
+        { 
+            UserName = "admin", 
+            Email = "admin@upworkerp.com",
+            PasswordHash = hashedPassword,
+            FirstName = "Admin",
+            LastName = "User",
+            Role = UserRole.Admin,
+            IsActive = true
+        });
+        dbContext.SaveChanges();
+        logger.LogInformation("Initial admin user created successfully.");
+    }
+}
+catch (Exception ex)
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "An error occurred while applying database migrations or seeding data.");
+    throw;
+}
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
