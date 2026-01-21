@@ -157,3 +157,5 @@
 /home/runner/work/UpworkCRM/UpworkCRM/tests/UpworkERP.Tests/obj/Debug/net10.0/UpworkERP.Tests.pdb
 /home/runner/work/UpworkCRM/UpworkCRM/tests/UpworkERP.Tests/obj/Debug/net10.0/UpworkERP.Tests.genruntimeconfig.cache
 /home/runner/work/UpworkCRM/UpworkCRM/tests/UpworkERP.Tests/obj/Debug/net10.0/ref/UpworkERP.Tests.dll
+/home/runner/work/UpworkCRM/UpworkCRM/tests/UpworkERP.Tests/bin/Debug/net10.0/Castle.Core.dll
+/home/runner/work/UpworkCRM/UpworkCRM/tests/UpworkERP.Tests/bin/Debug/net10.0/Moq.dll

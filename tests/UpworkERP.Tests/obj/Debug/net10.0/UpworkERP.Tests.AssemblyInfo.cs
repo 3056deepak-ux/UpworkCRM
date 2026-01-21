@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UpworkERP.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f44cbf00bb70896790cb9580d6a34fdee74c7fdb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c3839673c4568bc400ddd8a84e88a96a60b4b01e")]
 [assembly: System.Reflection.AssemblyProductAttribute("UpworkERP.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UpworkERP.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
