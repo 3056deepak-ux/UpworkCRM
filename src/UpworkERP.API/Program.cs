@@ -7,6 +7,8 @@ using UpworkERP.Infrastructure.Repositories;
 using UpworkERP.Application.Services.Interfaces;
 using UpworkERP.Application.Services.Implementation;
 using UpworkERP.Core.Interfaces;
+using UpworkERP.Core.Entities.Common;
+using UpworkERP.Core.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,6 +80,29 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// Apply database migrations automatically
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ERPDbContext>();
+    dbContext.Database.Migrate();
+    
+    // Seed initial data if Users table is empty
+    if (!dbContext.Users.Any())
+    {
+        dbContext.Users.Add(new User 
+        { 
+            UserName = "admin", 
+            Email = "admin@upworkerp.com",
+            PasswordHash = "hashedpassword",
+            FirstName = "Admin",
+            LastName = "User",
+            Role = UserRole.Admin,
+            IsActive = true
+        });
+        dbContext.SaveChanges();
+    }
+}
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
