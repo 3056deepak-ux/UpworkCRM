@@ -1,0 +1,106 @@
+@model IEnumerable<UpworkERP.Core.Entities.CRM.Customer>
+
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2><i class="bi bi-people"></i> Customers</h2>
+            <a asp-action="Create" class="btn btn-info">
+                <i class="bi bi-plus-circle"></i> Create New
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a asp-action="Index" asp-route-sortOrder="name">
+                                            Name <i class="bi bi-arrow-down-up"></i>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a asp-action="Index" asp-route-sortOrder="email">
+                                            Email <i class="bi bi-arrow-down-up"></i>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a asp-action="Index" asp-route-sortOrder="company">
+                                            Company <i class="bi bi-arrow-down-up"></i>
+                                        </a>
+                                    </th>
+                                    <th>Phone Number</th>
+                                    <th>
+                                        <a asp-action="Index" asp-route-sortOrder="status">
+                                            Status <i class="bi bi-arrow-down-up"></i>
+                                        </a>
+                                    </th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.Name</td>
+                                        <td>
+                                            <a href="mailto:@item.Email">@item.Email</a>
+                                        </td>
+                                        <td>@item.Company</td>
+                                        <td>
+                                            <a href="tel:@item.PhoneNumber">@item.PhoneNumber</a>
+                                        </td>
+                                        <td>
+                                            @if (item.Status == UpworkERP.Core.Enums.CustomerStatus.Active)
+                                            {
+                                                <span class="badge bg-success">Active</span>
+                                            }
+                                            else if (item.Status == UpworkERP.Core.Enums.CustomerStatus.Inactive)
+                                            {
+                                                <span class="badge bg-secondary">Inactive</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning">Suspended</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning" title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info" role="alert">
+                        <i class="bi bi-info-circle"></i> No customers found. <a asp-action="Create" class="alert-link">Create your first customer</a>.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

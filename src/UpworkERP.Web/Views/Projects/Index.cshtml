@@ -1,0 +1,114 @@
+@model IEnumerable<UpworkERP.Core.Entities.Projects.Project>
+
+@{
+    ViewData["Title"] = "Projects";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2><i class="bi bi-kanban"></i> Projects</h2>
+            <a asp-action="Create" class="btn btn-info">
+                <i class="bi bi-plus-circle"></i> Create New
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a asp-action="Index" asp-route-sortOrder="name">
+                                            Name <i class="bi bi-arrow-down-up"></i>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a asp-action="Index" asp-route-sortOrder="manager">
+                                            Project Manager <i class="bi bi-arrow-down-up"></i>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a asp-action="Index" asp-route-sortOrder="startdate">
+                                            Start Date <i class="bi bi-arrow-down-up"></i>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a asp-action="Index" asp-route-sortOrder="budget">
+                                            Budget <i class="bi bi-arrow-down-up"></i>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a asp-action="Index" asp-route-sortOrder="status">
+                                            Status <i class="bi bi-arrow-down-up"></i>
+                                        </a>
+                                    </th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.Name</td>
+                                        <td>@item.ProjectManager</td>
+                                        <td>@item.StartDate.ToString("yyyy-MM-dd")</td>
+                                        <td>@item.Budget.ToString("C")</td>
+                                        <td>
+                                            @if (item.Status == UpworkERP.Core.Enums.ProjectStatus.Active)
+                                            {
+                                                <span class="badge bg-success">Active</span>
+                                            }
+                                            else if (item.Status == UpworkERP.Core.Enums.ProjectStatus.Completed)
+                                            {
+                                                <span class="badge bg-info">Completed</span>
+                                            }
+                                            else if (item.Status == UpworkERP.Core.Enums.ProjectStatus.OnHold)
+                                            {
+                                                <span class="badge bg-warning">On Hold</span>
+                                            }
+                                            else if (item.Status == UpworkERP.Core.Enums.ProjectStatus.Cancelled)
+                                            {
+                                                <span class="badge bg-danger">Cancelled</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Pending</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning" title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info" role="alert">
+                        <i class="bi bi-info-circle"></i> No projects found. <a asp-action="Create" class="alert-link">Create your first project</a>.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
