@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UpworkERP.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+165bdc1ad4c1869e17c4b461ff4e04e07ef1a455")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cb501b32d7d8f0f59825c8be22de7b6d545e4a41")]
 [assembly: System.Reflection.AssemblyProductAttribute("UpworkERP.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UpworkERP.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
