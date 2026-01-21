@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\UpworkERP.Core\UpworkERP.Core.csproj" />
     <ProjectReference Include="..\..\src\UpworkERP.Application\UpworkERP.Application.csproj" />
+    <ProjectReference Include="..\..\src\UpworkERP.Web\UpworkERP.Web.csproj" />
   </ItemGroup>
 
 </Project>
