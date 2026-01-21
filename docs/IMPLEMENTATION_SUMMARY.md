@@ -247,13 +247,26 @@ The API now automatically applies pending Entity Framework Core migrations when 
 **Implementation Details:**
 - Migrations are applied using `Database.Migrate()` during application startup
 - Executed within a scoped service to properly manage the DbContext lifecycle
-- **Location:** `src/UpworkERP.API/Program.cs` (lines 84-105)
+- Comprehensive error handling and logging for migration failures
+- Application will fail to start if migrations cannot be applied
+- **Location:** `src/UpworkERP.API/Program.cs` (lines 84-120)
 
 ```csharp
-using (var scope = app.Services.CreateScope())
+try
 {
+    using var scope = app.Services.CreateScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<ERPDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    
+    logger.LogInformation("Applying database migrations...");
     dbContext.Database.Migrate();
+    logger.LogInformation("Database migrations applied successfully.");
+}
+catch (Exception ex)
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "An error occurred while applying database migrations.");
+    throw;
 }
 ```
 
@@ -263,6 +276,7 @@ The application automatically seeds critical initial data when tables are empty:
 **Default Admin User:**
 - Username: `admin`
 - Email: `admin@upworkerp.com`
+- Password: `Admin@123` (properly hashed using BCrypt)
 - Role: `Admin`
 - Status: Active
 
@@ -270,11 +284,12 @@ The application automatically seeds critical initial data when tables are empty:
 ```csharp
 if (!dbContext.Users.Any())
 {
+    var hashedPassword = BCrypt.Net.BCrypt.HashPassword("Admin@123");
     dbContext.Users.Add(new User 
     { 
         UserName = "admin", 
         Email = "admin@upworkerp.com",
-        PasswordHash = "hashedpassword",
+        PasswordHash = hashedPassword,
         FirstName = "Admin",
         LastName = "User",
         Role = UserRole.Admin,
@@ -284,14 +299,20 @@ if (!dbContext.Users.Any())
 }
 ```
 
+**Security Features:**
+- Uses BCrypt.Net for secure password hashing
+- Error handling and logging for migration failures
+- Prevents application startup if migrations fail
+
 **Benefits:**
 - ✅ No manual database setup required
 - ✅ Consistent database state across environments
 - ✅ Automatic table creation on first run
 - ✅ Critical data (admin user) available immediately
 - ✅ Prevents runtime errors due to missing tables
+- ✅ Secure password storage using industry-standard hashing
 
-⚠️ **Security Note:** The default admin password (`hashedpassword`) should be changed immediately after first login in production environments.
+⚠️ **Security Note:** The default admin password (`Admin@123`) should be changed immediately after first login in all environments, especially production.
 
 ## Project Statistics
 
