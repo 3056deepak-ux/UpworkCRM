@@ -1,0 +1,125 @@
+@model IEnumerable<UpworkERP.Core.Entities.Inventory.Product>
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2><i class="bi bi-box-seam"></i> Products</h2>
+            <a asp-action="Create" class="btn btn-info">
+                <i class="bi bi-plus-circle"></i> Create New
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a asp-action="Index" asp-route-sortOrder="name">
+                                            Name <i class="bi bi-arrow-down-up"></i>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a asp-action="Index" asp-route-sortOrder="sku">
+                                            SKU <i class="bi bi-arrow-down-up"></i>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a asp-action="Index" asp-route-sortOrder="category">
+                                            Category <i class="bi bi-arrow-down-up"></i>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a asp-action="Index" asp-route-sortOrder="price">
+                                            Unit Price <i class="bi bi-arrow-down-up"></i>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a asp-action="Index" asp-route-sortOrder="quantity">
+                                            Quantity In Stock <i class="bi bi-arrow-down-up"></i>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a asp-action="Index" asp-route-sortOrder="status">
+                                            Status <i class="bi bi-arrow-down-up"></i>
+                                        </a>
+                                    </th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.Name</td>
+                                        <td>@item.SKU</td>
+                                        <td>@item.Category</td>
+                                        <td>@item.UnitPrice.ToString("C")</td>
+                                        <td>
+                                            @if (item.QuantityInStock <= item.ReorderLevel)
+                                            {
+                                                <span class="badge bg-danger">@item.QuantityInStock</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@item.QuantityInStock</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (item.Status == UpworkERP.Core.Enums.ProductStatus.Active)
+                                            {
+                                                <span class="badge bg-success">Active</span>
+                                            }
+                                            else if (item.Status == UpworkERP.Core.Enums.ProductStatus.OutOfStock)
+                                            {
+                                                <span class="badge bg-danger">Out Of Stock</span>
+                                            }
+                                            else if (item.Status == UpworkERP.Core.Enums.ProductStatus.Inactive)
+                                            {
+                                                <span class="badge bg-warning">Inactive</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Discontinued</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning" title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info" role="alert">
+                        <i class="bi bi-info-circle"></i> No products found. <a asp-action="Create" class="alert-link">Create your first product</a>.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

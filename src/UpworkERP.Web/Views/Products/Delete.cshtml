@@ -51,17 +51,21 @@
 
                     <dt class="col-sm-3">Status</dt>
                     <dd class="col-sm-9">
-                        @if (Model.Status == UpworkERP.Core.Enums.InventoryStatus.Available)
+                        @if (Model.Status == UpworkERP.Core.Enums.ProductStatus.Active)
                         {
-                            <span class="badge bg-success">Available</span>
+                            <span class="badge bg-success">Active</span>
                         }
-                        else if (Model.Status == UpworkERP.Core.Enums.InventoryStatus.Reserved)
+                        else if (Model.Status == UpworkERP.Core.Enums.ProductStatus.Inactive)
                         {
-                            <span class="badge bg-warning">Reserved</span>
+                            <span class="badge bg-warning">Inactive</span>
+                        }
+                        else if (Model.Status == UpworkERP.Core.Enums.ProductStatus.OutOfStock)
+                        {
+                            <span class="badge bg-danger">Out of Stock</span>
                         }
                         else
                         {
-                            <span class="badge bg-danger">Out of Stock</span>
+                            <span class="badge bg-secondary">Discontinued</span>
                         }
                     </dd>
                 </dl>

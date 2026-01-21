@@ -1,0 +1,8 @@
+@{
+    var snippets = new [] { "jquery-validation", "jquery-validation-unobtrusive" };
+}
+
+@foreach (var snippet in snippets)
+{
+    <script src="~/lib/jquery-validation/dist/@(snippet).js"></script>
+}
